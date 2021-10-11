@@ -116,15 +116,15 @@ int8_t print_task(struct schedule_item_t *task, uint8_t tabs) {
            task->schedule->enable_datetime->tm_hour,
            task->schedule->enable_datetime->tm_min,
            task->schedule->enable_datetime->tm_sec,
-           task->schedule->enable_datetime->tm_year+1900,
+           task->schedule->enable_datetime->tm_year + 1900,
+           task->schedule->enable_datetime->tm_mon + 1,
            task->schedule->enable_datetime->tm_mday,
-           task->schedule->enable_datetime->tm_mon,
            task->schedule->disable_datetime->tm_hour,
            task->schedule->disable_datetime->tm_min,
            task->schedule->disable_datetime->tm_sec,
-           task->schedule->disable_datetime->tm_year+1900,
-           task->schedule->disable_datetime->tm_mday,
-           task->schedule->disable_datetime->tm_mon);
+           task->schedule->disable_datetime->tm_year + 1900,
+           task->schedule->disable_datetime->tm_mon + 1,
+           task->schedule->disable_datetime->tm_mday);
     delay(1);      
     return 1;
 }
