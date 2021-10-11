@@ -191,13 +191,13 @@ int8_t update_data_providers(struct doser_t *doser) {
                         sum_f += *( (float *)provider->data_sources[0]->readings->data + latest - d);                   
                     }
                     sum_f = sum_f / provider->data_input_time_range;
-                    printf("%15s avg of %02u samples: %.2f   \tHistory: ", 
+                    printf("%15s avg of %02u samples: %5.2f   \tHistory: ", 
                            provider->data_sources[0]->parent->name,
                            provider->data_input_time_range,
                            sum_f);
                     latest = provider->data_sources[0]->readings->latest;
                     for(uint8_t d = 0; d < provider->data_input_time_range; d++) {
-                        printf("%.2f", *( (float *)provider->data_sources[0]->readings->data + latest - d));                    
+                        printf("%5.2f", *( (float *)provider->data_sources[0]->readings->data + latest - d));                   
                         if (d < (provider->data_input_time_range - 1)) {
                             printf(", ");
                         }
@@ -214,7 +214,7 @@ int8_t update_data_providers(struct doser_t *doser) {
                            provider->data_input_time_range,
                            sum_f);
                     for (uint8_t d = 0; d < provider->data_input_time_range; d++) {
-                        printf("%02u", *( (uint8_t *)provider->data_sources[0]->readings->data + latest - d));
+                        printf("   %u", *( (uint8_t *)provider->data_sources[0]->readings->data + latest - d));
                         if (d < (provider->data_input_time_range - 1)) {
                             printf(", ");
                         }
