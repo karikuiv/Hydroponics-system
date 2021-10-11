@@ -6,7 +6,6 @@ Dependencies: wiringPi library used for delay(), compiles on windows when refere
 Entry point: main() at test_environment.c
 
 Next steps:
-Finalizing and prettying up test code for github.
 Integrating the system with a console user interface.
 Setting up network communications with hubs.
 Building the web interface and backend.
