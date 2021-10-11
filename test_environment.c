@@ -573,7 +573,7 @@ int8_t create_tasks(struct doser_t *doser) {
         return -1;
     }
     enable_datetime->tm_year = 121; /* The number of years since 1900   */
-    enable_datetime->tm_mon  = 10;  /* month, range 0 to 11             */
+    enable_datetime->tm_mon  = 9;   /* month, range 0 to 11             */
     enable_datetime->tm_mday = 1;   /* day of the month, range 1 to 31  */
     enable_datetime->tm_hour = 0;   /* hours, range 0 to 23             */
     enable_datetime->tm_min  = 0;   /* minutes, range 0 to 59           */
@@ -585,7 +585,7 @@ int8_t create_tasks(struct doser_t *doser) {
         return -1;
     }
     disable_datetime->tm_year = 122;
-    disable_datetime->tm_mon  = 1;
+    disable_datetime->tm_mon  = 0;
     disable_datetime->tm_mday = 31;
     disable_datetime->tm_hour = 0;
     disable_datetime->tm_min  = 0;
@@ -594,11 +594,11 @@ int8_t create_tasks(struct doser_t *doser) {
     task_set_schedule(doser->tasks[0], on_period, off_period, start_time,
                       stop_time, enable_datetime, disable_datetime);
     printf("Task schedule created. set between %04u-%02u-%02u and %04u-%02u-%02u\n",
-           doser->tasks[0]->schedule->enable_datetime->tm_year+1900,
-           doser->tasks[0]->schedule->enable_datetime->tm_mon,
+           doser->tasks[0]->schedule->enable_datetime->tm_year + 1900,
+           doser->tasks[0]->schedule->enable_datetime->tm_mon + 1,
            doser->tasks[0]->schedule->enable_datetime->tm_mday,
-           doser->tasks[0]->schedule->disable_datetime->tm_year+1900,
-           doser->tasks[0]->schedule->disable_datetime->tm_mon,
+           doser->tasks[0]->schedule->disable_datetime->tm_year + 1900,
+           doser->tasks[0]->schedule->disable_datetime->tm_mon + 1,
            doser->tasks[0]->schedule->disable_datetime->tm_mday);
     
     task_assign(ctrl_task_ptr->parent->parent, doser->tasks[0]);
@@ -658,7 +658,7 @@ int8_t create_tasks(struct doser_t *doser) {
         return -1;
     }
     enable_datetime->tm_year = 121; /* The number of years since 1900   */
-    enable_datetime->tm_mon  = 10;  /* month, range 0 to 11             */
+    enable_datetime->tm_mon  = 9;   /* month, range 0 to 11             */
     enable_datetime->tm_mday = 1;   /* day of the month, range 1 to 31  */
     enable_datetime->tm_hour = 0;   /* hours, range 0 to 23             */
     enable_datetime->tm_min  = 0;   /* minutes, range 0 to 59           */
@@ -670,7 +670,7 @@ int8_t create_tasks(struct doser_t *doser) {
         return -1;
     }
     disable_datetime->tm_year = 122;
-    disable_datetime->tm_mon  = 1;
+    disable_datetime->tm_mon  = 0;
     disable_datetime->tm_mday = 31;
     disable_datetime->tm_hour = 0;
     disable_datetime->tm_min  = 0;
@@ -685,11 +685,11 @@ int8_t create_tasks(struct doser_t *doser) {
            doser->tasks[1]->schedule->off_period->hh,
            doser->tasks[1]->schedule->off_period->mm,
            doser->tasks[1]->schedule->off_period->ss,
-           doser->tasks[1]->schedule->enable_datetime->tm_year+1900,
-           doser->tasks[1]->schedule->enable_datetime->tm_mon,
+           doser->tasks[1]->schedule->enable_datetime->tm_year + 1900,
+           doser->tasks[1]->schedule->enable_datetime->tm_mon + 1,
            doser->tasks[1]->schedule->enable_datetime->tm_mday,
-           doser->tasks[1]->schedule->disable_datetime->tm_year+1900,
-           doser->tasks[1]->schedule->disable_datetime->tm_mon,
+           doser->tasks[1]->schedule->disable_datetime->tm_year + 1900,
+           doser->tasks[1]->schedule->disable_datetime->tm_mon + 1,
            doser->tasks[1]->schedule->disable_datetime->tm_mday);
 
     task_assign(dev_task_ptr->parents[0]->parent, doser->tasks[1]);
@@ -744,7 +744,7 @@ int8_t create_tasks(struct doser_t *doser) {
         return -1;
     }
     enable_datetime->tm_year = 121; /* The number of years since 1900   */
-    enable_datetime->tm_mon  = 10;  /* month, range 0 to 11             */
+    enable_datetime->tm_mon  = 9;   /* month, range 0 to 11             */
     enable_datetime->tm_mday = 1;   /* day of the month, range 1 to 31  */
     enable_datetime->tm_hour = 0;   /* hours, range 0 to 23             */
     enable_datetime->tm_min  = 0;   /* minutes, range 0 to 59           */
@@ -756,7 +756,7 @@ int8_t create_tasks(struct doser_t *doser) {
         return -1;
     }
     disable_datetime->tm_year = 122;
-    disable_datetime->tm_mon  = 1;
+    disable_datetime->tm_mon  = 0;
     disable_datetime->tm_mday = 31;
     disable_datetime->tm_hour = 0;
     disable_datetime->tm_min  = 0;
@@ -771,11 +771,11 @@ int8_t create_tasks(struct doser_t *doser) {
            doser->tasks[2]->schedule->off_period->hh,
            doser->tasks[2]->schedule->off_period->mm,
            doser->tasks[2]->schedule->off_period->ss,
-           doser->tasks[2]->schedule->enable_datetime->tm_year+1900,
-           doser->tasks[2]->schedule->enable_datetime->tm_mon,
+           doser->tasks[2]->schedule->enable_datetime->tm_year + 1900,
+           doser->tasks[2]->schedule->enable_datetime->tm_mon + 1,
            doser->tasks[2]->schedule->enable_datetime->tm_mday,
-           doser->tasks[2]->schedule->disable_datetime->tm_year+1900,
-           doser->tasks[2]->schedule->disable_datetime->tm_mon,
+           doser->tasks[2]->schedule->disable_datetime->tm_year + 1900,
+           doser->tasks[2]->schedule->disable_datetime->tm_mon + 1,
            doser->tasks[2]->schedule->disable_datetime->tm_mday);
 
     task_assign(dev_task_ptr->parents[0]->parent, doser->tasks[2]); 
@@ -981,8 +981,8 @@ int8_t main(void) {
                    doser.timers->system_datetime->tm_hour,
                    doser.timers->system_datetime->tm_min,
                    doser.timers->system_datetime->tm_sec,
-                   doser.timers->system_datetime->tm_year+1900,
-                   doser.timers->system_datetime->tm_mon,
+                   doser.timers->system_datetime->tm_year + 1900,
+                   doser.timers->system_datetime->tm_mon + 1,
                    doser.timers->system_datetime->tm_mday,
                    millis());
             printf("\n");
