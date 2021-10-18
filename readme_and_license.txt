@@ -5,8 +5,8 @@ Loads data and prints system lists and the system hierarchy, and then shows a si
 
 Building:
 Compiles with compile.sh on raspberry pi
-Dependencies: wiringPi library (for now used only for delay(), but the full environment will use GPIO etc and requires raspberry pi)
-If using non-raspberry pi linux or windows, remove all references to "delay" from print_hierarchy.c and test_environment.c as well as "wiringPiSetup()" and "#include <wiringPi.h>" from test_environment.c
+Dependencies: wiringPi library (for now used only for delay() and millis(), but the full environment will use GPIO etc and requires raspberry pi)
+If using non-raspberry pi linux or windows, remove all references to "delay" from print_hierarchy.c and all references to "delay" and "millis, as well as "wiringPiSetup()" and "#include <wiringPi.h>" from test_environment.c, but this will screw up timing of the main task loop.
 Entry point: main() at test_environment.c
 
 Next steps:
