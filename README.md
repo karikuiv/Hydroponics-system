@@ -3,6 +3,8 @@ DIY Hydroponics Management System
 
 Please check the videos and readme_and_license.txt for more information.
 
+Building the test environment: see readme_and_license.txt
+
 # Software test environment
 
 Click the image to see the video
