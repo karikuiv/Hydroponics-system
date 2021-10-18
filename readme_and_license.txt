@@ -2,7 +2,11 @@ Test environment for the doser:
 A test run making use of all important data structures.
 Creates mock hub nodes, devices, sensors and their data sources, data providers from data sources, environments, tasks and their schedules, and controllers.
 Loads data and prints system lists and the system hierarchy, and then shows a simple tasking system.
-Dependencies: wiringPi library used for delay(), compiles on windows when references to it are removed.
+
+Building:
+Compiles with compile.sh on raspberry pi
+Dependencies: wiringPi library (for now used only for delay(), but the full environment will use GPIO etc and requires raspberry pi)
+If using non-raspberry pi linux or windows, remove all references to "delay" from print_hierarchy.c and test_environment.c as well as "wiringPiSetup()" and "#include <wiringPi.h>" from test_environment.c
 Entry point: main() at test_environment.c
 
 Next steps:
