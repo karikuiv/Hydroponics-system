@@ -11,8 +11,6 @@
 #include "doser_system.h"
 #include "environment.h"
 
-extern struct environment_t *environment;
-
 #define SENSOR_TYPE_PH      0x01
 #define SENSOR_TYPE_EC      0x02
 #define SENSOR_TYPE_HUMI    0x03
