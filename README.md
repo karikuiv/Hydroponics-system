@@ -5,11 +5,11 @@ Please check the videos and readme_and_license.txt for more information.
 
 Building the test environment: see readme_and_license.txt
 
-# Wireless data acquisition (2021-10-25)
+# Console user interface test with wireless data acquisition and event log (2021-10-28)
 
 Click the image to see the video
 
-[![Test environment](https://img.youtube.com/vi/nhmQkM6Nsuo/0.jpg)](https://www.youtube.com/watch?v=nhmQkM6Nsuo)
+[![Test environment](https://img.youtube.com/vi/x8l4Z8xdHIY/0.jpg)](https://www.youtube.com/watch?v=x8l4Z8xdHIY)
 
 # Software test environment (2021-10-11)
 
