@@ -1,3 +1,9 @@
+/* 
+ * Copyright 2021 Kari Kuivalainen ( https://github.com/karikuiv )
+ * Read only license: These files are uploaded for the sole purpose of showing code samples to potential employers.
+ * See readme_license.txt for more information
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -8,6 +14,10 @@
 #include "environment.h"
 #include "schedule.h"
 
+/**
+ * Assign device to an environment.
+ * 
+ */
 int8_t assign_device(struct environment_t *environment, struct device_t *device) {
     struct device_t **tmp_ptr;
     struct environment_t **tmp_ptr_e;
@@ -41,8 +51,10 @@ int8_t assign_device(struct environment_t *environment, struct device_t *device)
     return environment->num_devices;
 }
 
-/*
- * for now just resize array every time a new device is added to list
+/**
+ * Set up a device from settings.
+ *
+ * For now just resize the arrays every time a new device is added to list
  * later might want to use linked lists, although resizing an array ~20 times
  * from size 1 to ~20 maybe once during the program's life is probably not so bad
  *

@@ -1,3 +1,9 @@
+/* 
+ * Copyright 2021 Kari Kuivalainen ( https://github.com/karikuiv )
+ * Read only license: These files are uploaded for the sole purpose of showing code samples to potential employers.
+ * See readme_license.txt for more information
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -7,9 +13,13 @@
 #include "doser_system.h"
 #include "sensor.h"
 
+/**
+ * Create data provider from a sensor's data source and settings.
+ * Readings from sensors are processed and stored in the data provider's buffer.
+ */
  int8_t create_data_provider(struct doser_t *doser, struct data_source_t *source, char *name, 
-                            uint8_t type, uint32_t num_data_points, uint8_t data_input_time_range,
-                            uint8_t data_update_rate, uint8_t output_time_per_point) {
+                             uint8_t type, uint32_t num_data_points, uint8_t data_input_time_range,
+                             uint8_t data_update_rate, uint8_t output_time_per_point) {
     struct data_provider_t *data_provider;
     struct data_provider_t **tmp_ptr;
     
@@ -83,12 +93,16 @@
     return doser->num_data_providers;
 }
 
+/**
+ * Add a data source to a data provider.
+ * For example to get the average pH from multiple sensors.
+ */
 int8_t add_source_to_provider(struct data_provider_t *provider, struct data_source_t *source) {
     if (provider == NULL) {
-        printf("error: data provider is empty\n");
+        printf("error: data provider is missing\n");
         return -1;
     } else if (source == NULL) {
-        printf("error: data source is empty\n");
+        printf("error: data source is missing\n");
         return -1;
     }
     struct data_source_t **tmp_ptr;
@@ -104,6 +118,10 @@ int8_t add_source_to_provider(struct data_provider_t *provider, struct data_sour
     return provider->num_data_sources;      
 }
 
+/**
+ * Assign data provider to an environment.
+ * 
+ */
 int8_t assign_data_provider(struct environment_t *parent, struct data_provider_t *data_provider) {
     struct data_provider_t **tmp_ptr;
     

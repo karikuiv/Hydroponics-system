@@ -1,3 +1,9 @@
+/* 
+ * Copyright 2021 Kari Kuivalainen ( https://github.com/karikuiv )
+ * Read only license: These files are uploaded for the sole purpose of showing code samples to potential employers.
+ * See readme_license.txt for more information
+ */
+
 #pragma once
 
 #include <time.h>
@@ -6,8 +12,6 @@
 #include "doser_system.h"
 #include "environment.h"
 #include "device.h"
-
-extern struct doser_t doser;
 
 #define TASK_NOP                0x00
 #define TASK_PH_SETPOINT        0x01

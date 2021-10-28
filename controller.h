@@ -1,3 +1,9 @@
+/* 
+ * Copyright 2021 Kari Kuivalainen ( https://github.com/karikuiv )
+ * Read only license: These files are uploaded for the sole purpose of showing code samples to potential employers.
+ * See readme_license.txt for more information
+ */
+
 #pragma once
 
 #include <stdint.h>
@@ -5,8 +11,6 @@
 #include "doser_system.h"
 #include "environment.h"
 #include "controller.h"
-
-extern struct doser_t doser;
 
 #define CONTROLLER_TYPE_PH  0x00
 #define CONTROLLER_TYPE_EC  0x01

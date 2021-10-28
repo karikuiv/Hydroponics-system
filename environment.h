@@ -1,3 +1,9 @@
+/* 
+ * Copyright 2021 Kari Kuivalainen ( https://github.com/karikuiv )
+ * Read only license: These files are uploaded for the sole purpose of showing code samples to potential employers.
+ * See readme_license.txt for more information
+ */
+
 #pragma once
 
 #include <stdint.h>
@@ -8,8 +14,6 @@
 #include "data_provider.h"
 #include "controller.h"
 #include "schedule.h"
-
-extern struct doser_t doser;
 
 #define ENVIRONMENT_TYPE_ENVIRONMENT    0x00
 #define ENVIRONMENT_TYPE_RESERVOIR      0x01

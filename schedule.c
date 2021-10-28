@@ -1,3 +1,9 @@
+/* 
+ * Copyright 2021 Kari Kuivalainen ( https://github.com/karikuiv )
+ * Read only license: These files are uploaded for the sole purpose of showing code samples to potential employers.
+ * See readme_license.txt for more information
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -11,6 +17,9 @@
 #include "ph_controller.h"
 #include "ec_controller.h"
 
+/**
+ * Assign task to an environment.
+ */
 int8_t task_assign(struct environment_t* environment, struct schedule_item_t *task) {
     struct schedule_item_t **tasks_ptr;
     
@@ -36,6 +45,9 @@ int8_t task_assign(struct environment_t* environment, struct schedule_item_t *ta
     return environment->num_tasks;
 }
 
+/**
+ * Attach the action to take to a scheduled task.
+ */
 int8_t task_attach(struct schedule_item_t *task) {
     struct schedule_item_t **tasks_ptr;
     uint8_t ret = 0;
@@ -110,6 +122,9 @@ int8_t task_attach(struct schedule_item_t *task) {
     return ret;
 }
 
+/**
+ * Add the setpoint value used by ec & pH controllers to a task.
+ */
 int8_t task_add_setpoint(struct schedule_item_t *task, float setpoint) {
     if (task == NULL) {
         printf("error: task is missing\n");
@@ -126,6 +141,9 @@ int8_t task_add_setpoint(struct schedule_item_t *task, float setpoint) {
     return 1;
 }
 
+/**
+ * Assign a controller to a setpoint task.
+ */
 int8_t task_add_controller(struct schedule_item_t *task, struct controller_t *controller) {
     if (task == NULL) {
         printf("error: task is missing\n");
@@ -145,6 +163,9 @@ int8_t task_add_controller(struct schedule_item_t *task, struct controller_t *co
     return 1;   
 }
 
+/**
+ * Assign the controlled device to a device task.
+ */
 int8_t task_add_device(struct schedule_item_t *task, struct device_t *device) {
     if (task == NULL) {
         return -1;
@@ -162,6 +183,9 @@ int8_t task_add_device(struct schedule_item_t *task, struct device_t *device) {
     return 1;
 }
 
+/**
+ * Create a task stub. Must add schedule, action and properties separately.
+ */
 int8_t task_create(struct doser_t *doser, char *name, uint8_t type, void *action) {
     struct schedule_item_t **tmp_ptr;
     struct schedule_item_t *task;
@@ -242,6 +266,9 @@ int8_t task_create(struct doser_t *doser, char *name, uint8_t type, void *action
     return doser->num_tasks;
 }
 
+/**
+ * Set a schedule (enabled, disabled, active, inactive) and the program (on & off periods) to a task. 
+ */
 int8_t task_set_schedule(struct schedule_item_t *task,
                          struct time_hhmmss *on_period, struct time_hhmmss *off_period,
                          struct time_hhmmss *start_time, struct time_hhmmss *stop_time,
@@ -288,6 +315,9 @@ int8_t task_set_schedule(struct schedule_item_t *task,
     return 1;
 }
 
+/**
+ * Convert hh:mm:ss to seconds.
+ */
 int32_t time_seconds(struct time_hhmmss *time) {
     int32_t seconds = 0;
 
@@ -303,6 +333,9 @@ int32_t time_seconds(struct time_hhmmss *time) {
     return seconds;
 }
 
+/**
+ * Check whether a time is between two times. Mainly used to check if a task is active.
+ */
 int8_t check_time_between(struct time_hhmmss *time_checked,
                            struct time_hhmmss *time_start,
                            struct time_hhmmss *time_stop) {
@@ -334,6 +367,9 @@ int8_t check_time_between(struct time_hhmmss *time_checked,
     return 0;
 }
 
+/**
+ * Check whether task is enabled or disabled.
+ */
 int8_t task_is_enabled(struct doser_t *doser, struct schedule_item_t *task) {
 /*  if (check_datetime_passed(doser, task->schedule->enable_datetime) == TIME_PASSED) {
         return 1;
@@ -344,6 +380,9 @@ int8_t task_is_enabled(struct doser_t *doser, struct schedule_item_t *task) {
     return 1;
 }
 
+/**
+ * Check whether task is active or inactive.
+ */
 int8_t task_is_active(struct doser_t *doser, struct schedule_item_t *task) {
     if (doser == NULL) {
         printf("error: doser is missing\n");

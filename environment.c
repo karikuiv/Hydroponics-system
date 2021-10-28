@@ -1,3 +1,9 @@
+/* 
+ * Copyright 2021 Kari Kuivalainen ( https://github.com/karikuiv )
+ * Read only license: These files are uploaded for the sole purpose of showing code samples to potential employers.
+ * See readme_license.txt for more information
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -9,6 +15,10 @@
 #include "sensor.h"
 #include "controller.h"
 
+/**
+ * Create an environment container that stores references to attached reservoirs, devices, etc.
+ * Reservoir is also an environment but can not contain child environments or reservoirs.
+ */
 int8_t create_environment(struct doser_t *doser, char *name, uint8_t type) {
     struct environment_t *environment;
     struct environment_t **tmp_ptr;
@@ -87,6 +97,11 @@ int8_t create_environment(struct doser_t *doser, char *name, uint8_t type) {
     return ret;
 }
 
+/**
+ * Assign environment to another.
+ * For example assign a reservoir to a 'tent' or a 'room' to a 'location'.
+ * 
+ */
 int8_t assign_environment(struct environment_t *parent, struct environment_t *environment) {
     struct environment_t **tmp_ptr;
     int8_t ret = 0;
@@ -99,6 +114,7 @@ int8_t assign_environment(struct environment_t *parent, struct environment_t *en
         return -1;
     }
     
+    /* TODO: disallow attaching reservoirs to another or environments to reservoirs */
     environment->parent = parent;
     if (environment->type == ENVIRONMENT_TYPE_RESERVOIR) {
         tmp_ptr = realloc(parent->reservoirs, sizeof(struct environment_t *) * (parent->num_reservoirs + 1));

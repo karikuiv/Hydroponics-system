@@ -1,6 +1,14 @@
+/* 
+ * Copyright 2021 Kari Kuivalainen ( https://github.com/karikuiv )
+ * Read only license: These files are uploaded for the sole purpose of showing code samples to potential employers.
+ * See readme_license.txt for more information
+ */
+
 #pragma once
 
 #include <stdint.h>
+
+struct doser_t;
 
 #include "environment.h"
 #include "device.h"
@@ -16,8 +24,6 @@
 #define COMMAND_DEVICE_OFF  0x01
 #define COMMAND_DEVICE_ON   0x02
 #define SYSTEM_NUM_COMMANDS 0x03
-
-extern struct readings_t readings;
 
 struct doser_t {
     uint8_t                 num_environments;
@@ -80,11 +86,13 @@ struct node_t {
 };
 
 int8_t load_node(struct doser_t *doser, char *name, uint8_t a, uint8_t b, uint8_t c, uint8_t d);
-int8_t add_reading_to_data_source(struct readings_t *readings, uint8_t type, void *result);
+int8_t add_result_to_readings(struct readings_t *readings, uint8_t type, void *result);
+int8_t get_avg_of_range_from_readings(struct readings_t *readings, uint8_t data_type,
+                                      uint32_t begin, uint32_t end, float *result);
 int8_t load_readings(struct doser_t *doser);
 int8_t data_acquisition(struct doser_t *doser);
 int8_t update_data_providers(struct doser_t *doser);
-uint8_t process_scheduled_tasks(struct doser_t *doser);
+int8_t process_scheduled_tasks(struct doser_t *doser);
 int8_t device_control(struct device_t *device, int8_t command);
 /*
 uint8_t msg_node (struct node_t *provider, uint8_t cmd, uint8_t data);

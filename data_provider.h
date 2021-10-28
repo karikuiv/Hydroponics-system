@@ -1,10 +1,16 @@
+/* 
+ * Copyright 2021 Kari Kuivalainen ( https://github.com/karikuiv )
+ * Read only license: These files are uploaded for the sole purpose of showing code samples to potential employers.
+ * See readme_license.txt for more information
+ */
+
 #pragma once
 
 #include <stdint.h>
 
-#include "sensor.h"
+struct readings_t;
 
-extern struct doser_t doser;
+#include "sensor.h"
 
 struct data_provider_t {
     uint8_t                 id;
@@ -12,7 +18,7 @@ struct data_provider_t {
     char                    *name;
 
     uint8_t                 output_data_type;       /* f, u8, u16, ... */
-    char                    *output_data_format;    /* "%.2f", "04u", ... */
+    char                    *output_data_format;    /* "%.2f", "04u", ... these could be generated during runtime instead */
     uint8_t                 output_decimals;        /* 0..3? */
     uint8_t                 output_time_per_point;  /* 1..3600 seconds? */
     uint16_t                data_update_rate;       /* update frequency 1 = every second, 3600 = once an hour */

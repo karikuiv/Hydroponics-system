@@ -1,11 +1,15 @@
+/* 
+ * Copyright 2021 Kari Kuivalainen ( https://github.com/karikuiv )
+ * Read only license: These files are uploaded for the sole purpose of showing code samples to potential employers.
+ * See readme_license.txt for more information
+ */
+
 #pragma once
 
 #include <stdint.h>
 
 #include "doser_system.h"
 #include "environment.h"
-
-extern struct doser_t doser;
 
 struct device_t {
     uint8_t                 id;                 /* internal id used by daemon. for now the index in an array */

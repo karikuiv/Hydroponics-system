@@ -1,3 +1,9 @@
+/* 
+ * Copyright 2021 Kari Kuivalainen ( https://github.com/karikuiv )
+ * Read only license: These files are uploaded for the sole purpose of showing code samples to potential employers.
+ * See readme_license.txt for more information
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -14,6 +20,10 @@
 const char *task_status_strings[] = {"Unknown", "Off", "On", "Disabled", "Enabled",
                                      "Inactive", "Active", "Waiting", "Dosing"};
 
+/**
+ * Delay milliseconds. Uses delay() from wiringPi.h.
+ * 
+ */
 void delayms(uint16_t delay_count) {
     for (uint16_t i = 0; i < delay_count; i++) {
         delay(1);
@@ -29,11 +39,9 @@ void print_tabs(uint8_t tabs) {
     return;
 }
 
-/* what sort of scenario would have one device be assigned to a reservoir and its parent environment
- *  and then have 2 tasks attached to the device, one assigned to the res and another to the environment?
- *  how would that be handled when printing?
+/**
+ * Print task details (probably only used for test environment this way).
  */
-
 int8_t print_task(struct schedule_item_t *task, uint8_t tabs) {
     struct task_device_t *dev;
     struct task_setpoint_t *ctrl;
@@ -63,13 +71,14 @@ int8_t print_task(struct schedule_item_t *task, uint8_t tabs) {
     if (task->type == TASK_DEVICE) {
         dev = (struct task_device_t *) task->action_ptr;
         printf("\t Status: %s          \n",
-               task_status_strings[dev->status], 
+               task_status_strings[dev->status]);
+        /*, 
                task->schedule->run_time->hh,
                task->schedule->run_time->mm,
                task->schedule->run_time->ss,
                task->schedule->start_time->hh,
                task->schedule->start_time->mm,
-               task->schedule->start_time->ss);     
+               task->schedule->start_time->ss);*/
     } else if ((task->type == TASK_PH_SETPOINT) || (task->type == TASK_EC_SETPOINT)) {
         ctrl = (struct task_setpoint_t *) task->action_ptr;
         printf("\t Status: %s          \n",
@@ -77,13 +86,13 @@ int8_t print_task(struct schedule_item_t *task, uint8_t tabs) {
     }
 
     uint32_t on_period_seconds = 0;
-    on_period_seconds += task->schedule->on_period->hh*60*60;
-    on_period_seconds += task->schedule->on_period->mm*60;
+    on_period_seconds += task->schedule->on_period->hh * 60 * 60;
+    on_period_seconds += task->schedule->on_period->mm * 60;
     on_period_seconds += task->schedule->on_period->ss;
     
     uint32_t off_period_seconds = 0;
-    off_period_seconds += task->schedule->off_period->hh*60*60;
-    off_period_seconds += task->schedule->off_period->mm*60;
+    off_period_seconds += task->schedule->off_period->hh * 60 * 60;
+    off_period_seconds += task->schedule->off_period->mm * 60;
     off_period_seconds += task->schedule->off_period->ss;               
     delay(1);
     print_tabs(tabs);
@@ -129,6 +138,9 @@ int8_t print_task(struct schedule_item_t *task, uint8_t tabs) {
     return 1;
 }
 
+/**
+ * Print all devices attached to an environment.
+ */
 int8_t print_devices(struct environment_t *environment, uint8_t tabs) {
     if (environment == NULL) {
         printf("error: environment is missing\n");
@@ -137,9 +149,7 @@ int8_t print_devices(struct environment_t *environment, uint8_t tabs) {
 
     struct device_t *dev;
     struct schedule_item_t *task;
-    struct time_hhmmss *task_runtime;
-    struct time_hhmmss *task_ontime;
-    uint8_t num_tasks = dev->num_attached_tasks;
+    uint8_t num_tasks = 0;
 
     for (uint8_t i = 0; i < environment->num_devices; i++) {
         dev = environment->devices[i];
@@ -166,6 +176,9 @@ int8_t print_devices(struct environment_t *environment, uint8_t tabs) {
     return 1;
 }
 
+/**
+ * Print all controllers attached to a reservoir.
+ */
 int8_t print_controllers(struct environment_t *reservoir, uint8_t tabs) {
     if (reservoir == NULL) {
         printf("error: reservoir is missing\n");
@@ -174,9 +187,7 @@ int8_t print_controllers(struct environment_t *reservoir, uint8_t tabs) {
 
     struct controller_t *controller;
     struct schedule_item_t *task;
-    struct time_hhmmss *task_runtime;
-    struct time_hhmmss *task_ontime;
-    uint8_t num_tasks = controller->num_attached_tasks;
+    uint8_t num_tasks = 0;
 
     for (uint8_t i = 0; i < reservoir->num_controllers; i++) {
         controller = reservoir->controllers[i];
@@ -203,14 +214,25 @@ int8_t print_controllers(struct environment_t *reservoir, uint8_t tabs) {
     return 1;
 }
 
+/**
+ * Print all sensors attached to an environment.
+ */
 int8_t print_sensors(struct environment_t *environment, uint8_t  tabs) {
     return 1;
 }
 
+/**
+ * Print a hierarchical structure of environments and reservoirs and attached sensors, devices, tasks, etc.
+ */
 int8_t print_hierarchy(struct doser_t *doser) {
     struct environment_t *env = NULL;
     struct environment_t *res = NULL;
     uint8_t print_delay = 250;
+    
+    if (doser == NULL) {
+        printf("error: doser is missing\n");
+        return -1;
+    }
     
  /*
   * TODO: consider sprintf every line to a large buffer
@@ -242,4 +264,6 @@ int8_t print_hierarchy(struct doser_t *doser) {
             printf("\n");*/
         }
     }
+    
+    return 1;
 }

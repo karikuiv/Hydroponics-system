@@ -1,15 +1,14 @@
 /* 
- * Goal: set up essential system internals, data structures and hierarchies
- *  so the code can be reused with minimal effort in the actual system
- *
- * Compiles on windows if references to wiringPi and delay() are removed
- * Compiles on linux with -lwiringPi
+ * Copyright 2021 Kari Kuivalainen ( https://github.com/karikuiv )
+ * Read only license: These files are uploaded for the sole purpose of showing code samples to potential employers.
+ * See readme_license.txt for more information
  */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
+#include <inttypes.h>
 #include <time.h>
 
 #include <wiringPi.h> 
@@ -24,6 +23,9 @@
 #include "controller.h"
 #include "print_hierarchy.h"
 
+/**
+ * Set up the nodes.
+ */
 int8_t load_nodes(struct doser_t *doser) {
     /* better to parse a "a.b.c.d" string with gettok? */
     if (load_node(doser, "Internal", 127, 0, 0, 1) == -1) {
@@ -39,12 +41,19 @@ int8_t load_nodes(struct doser_t *doser) {
         printf("failed to load node!\n");
         return -1;
     }
+    
+    return 1;
 }
 
+/**
+ * Set up mock devices as if they were provided by two different hubs.
+ * Later: load devices from a csv file?
+ *  file format: provider,device_name,device_name,...\nprovider,device_name,...
+ * device id = index, used to control_device(id); 
+ */
+
 int8_t load_devices(struct doser_t *doser) {
-    /* load devices from a csv file? */
-    /* file format: provider,device_name,device_name,...\nprovider,device_name,... */
-    /* device id = index, used to control_device(id); */
+
     int8_t ret = 0;
     
     ret = load_device(doser, NODE_HUB_1, "Light_0");
@@ -240,12 +249,14 @@ int8_t load_devices(struct doser_t *doser) {
     return 1;
 }
 
+/**
+ * Set up mock sensors as if they were provided by two different hubs.
+ * Later: load sensors from a csv file?
+ *  sensor_provider, sensor_name, num_data_sources, data_source_type, data_type, ...
+ *  1,DHT22_0,2,x,y,a,b,1,DHT22_1,x,y,a,b,1,PH_PROBE_0,z,b,...
+ */
 int8_t load_sensors(struct doser_t *doser) {
-    /* load sensors from a csv file? */
-    /* sensor_provider, sensor_name, num_data_sources, data_source_type, data_type, ...*/
-    /* 1,DHT22_0,2,x,y,a,b,1,DHT22_1,x,y,a,b,1,PH_PROBE_0,z,b,... */
     /* TODO: ret = load_sensor(...); if (ret == bad) { error }; */
-    
     load_sensor(doser, NODE_HUB_1, "DHT22_0", SENSOR_TYPE_HUMI, DATA_TYPE_UINT8,
                                               SENSOR_TYPE_TEMP, DATA_TYPE_FLOAT);
     printf("%15s (node: #%02u) loaded as Sensor #%02u\n",
@@ -321,11 +332,10 @@ int8_t load_sensors(struct doser_t *doser) {
     return 1;
 }
 
+/**
+ * Create two environments and three reservoirs, assign reservoirs to environments.
+ */
 int8_t create_environments(struct doser_t *doser) {
-    /*
-     * create environments and reservoirs, assign reservoirs to environments
-     */
-     
     int8_t child_id = 0;
     int8_t parent_id = 0;    
     
@@ -370,12 +380,11 @@ int8_t create_environments(struct doser_t *doser) {
     return 1;
 }
 
+/**
+ * Create ph & ec controllers and assign them to reservoirs.
+ * Assign data providers to controllers later.
+ */
 int8_t setup_test_environment(struct doser_t *doser) {
-    /*
-     * create ph & ec controllers and assign them to reservoirs
-     * assign data providers to controllers later
-     */
-
     int8_t child_id = 0;
     
     child_id = create_controller(doser, CONTROLLER_TYPE_PH, "pH controller #1");
@@ -414,9 +423,8 @@ int8_t setup_test_environment(struct doser_t *doser) {
     printf("Assigned %s to %s (%02u)\n", doser->controllers[child_id - 1]->name,
                                          doser->reservoirs[2]->name, doser->reservoirs[2]->id);
     printf("\n");
-    /*
-     * assign devices to environments and reservoirs
-     */
+
+    /* Assign devices to environments and reservoirs. */
     for (uint8_t i = 0; i < 5; i++) {
         if(assign_device((doser->environments[0]), (doser->devices[i])) < 0) {
             printf("failed assigning device\n");
@@ -462,7 +470,8 @@ int8_t setup_test_environment(struct doser_t *doser) {
                                              doser->reservoirs[2]->name, doser->reservoirs[2]->id);
     }       
     printf("\n");
-    /* assign sensors to environments and reservoirs */
+    
+    /* Assign sensors to environments and reservoirs. */
     for (uint8_t i = 0; i < 2; i++) {
         assign_sensor(doser->environments[0], doser->sensors[i]);
         printf("Assigned %s to %s (%02u)\n", doser->sensors[i]->name,
@@ -493,7 +502,8 @@ int8_t setup_test_environment(struct doser_t *doser) {
                                              doser->reservoirs[2]->name, doser->reservoirs[2]->id);     
     }   
     printf("\n");
-    /* assign provider to parent sensor's parent env, or if env type = res, then parent of res */
+    
+    /* Assign provider to parent sensor's parent env, or if env type is res, then parent of res. */
     uint8_t id = 0;
     struct sensor_t *tmp_ptr = NULL;
     for (uint8_t i = 0; i < doser->num_data_providers; i++) {
@@ -515,12 +525,13 @@ int8_t setup_test_environment(struct doser_t *doser) {
     return 1;
 }
 
+/**
+ * Create three example tasks: two with different programs for a device and one for a controller.
+ *
+ * What if create_schedule accepted structs and packed them into schedule_t
+ *  and create_task accepted schedule_t as well as other arguments?
+ */
 int8_t create_tasks(struct doser_t *doser) {
-    /* create two example tasks: device and controller */
-    
-    /* what if create_schedule accepted structs and packed them into schedule_t */
-    /* and create_task accepted schedule_t as well as other arguments */
-    
     struct controller_t *ctrl_task_ptr;
     uint8_t task_id = 0;
     float setpoint = 5.80;
@@ -646,7 +657,7 @@ int8_t create_tasks(struct doser_t *doser) {
         printf("error: malloc stop_time\n");
         return -1;
     }
-    /* task runs throughout the day */
+
     update_system_time(doser);
     stop_time->hh = doser->timers->system_time->hh;
     stop_time->mm = doser->timers->system_time->mm + 1;
@@ -733,7 +744,7 @@ int8_t create_tasks(struct doser_t *doser) {
         printf("error: malloc stop_time\n");
         return -1;
     }
-    /* task runs throughout the day */
+
     stop_time->hh = doser->timers->system_time->hh;
     stop_time->mm = doser->timers->system_time->mm + 2;
     stop_time->ss = 0;
@@ -787,6 +798,9 @@ int8_t create_tasks(struct doser_t *doser) {
     return 1;
 }
 
+/**
+ * Prints all system lists.
+ */
 uint8_t print_system_lists(struct doser_t *doser) {
     printf("System lists:\n");
     printf("\n");
@@ -852,8 +866,38 @@ uint8_t print_system_lists(struct doser_t *doser) {
     return 1;
 }
 
-int8_t main(void) {
-    uint8_t print_delay = 100;
+/**
+ * Update the user interface.
+ * For now prints the tasks and system time.
+ * Later: proper text user interface with sections and decorations.
+ */
+int8_t update_ui(struct doser_t *doser) {
+    uint32_t current_time_ms;
+    struct schedule_item_t *task;
+
+    for (uint8_t t = 0; t < doser->num_tasks; t++) {
+        task = doser->tasks[t];
+        print_tabs(1);
+        printf("\t   Task: %02u - %s\n", t, task->name);
+        print_task(task, 1);
+        printf("\n");
+    }
+    current_time_ms = millis();
+    printf("System time: %02u:%02u:%02u %04u-%02u-%02u\tStatus: waiting...",
+           doser->timers->system_datetime->tm_hour,
+           doser->timers->system_datetime->tm_min,
+           doser->timers->system_datetime->tm_sec,
+           doser->timers->system_datetime->tm_year + 1900,
+           doser->timers->system_datetime->tm_mon + 1,
+           doser->timers->system_datetime->tm_mday);
+    printf("%08u\n", current_time_ms);
+    printf("\n");
+    
+    return 1;
+}
+
+int main(void) {
+    uint8_t print_delay = 1;
     struct doser_t doser;
     doser.num_environments = 0;
     doser.environments = NULL;
@@ -876,17 +920,17 @@ int8_t main(void) {
     
     doser.timers = malloc(sizeof(struct timers_t));
     if (doser.timers == NULL) {
-        printf("error: malloc doser->timers\n");
+        printf("error: malloc doser.timers\n");
         return 1;
     }
     doser.timers->system_datetime = malloc(sizeof(struct tm));
     if (doser.timers->system_datetime == NULL) {
-        printf("error: malloc doser->timers->system_datetime\n");
+        printf("error: malloc doser.timers->system_datetime\n");
         return 1;
     }
     doser.timers->system_time = malloc(sizeof(struct time_hhmmss));
     if (doser.timers->system_time == NULL) {
-        printf("error: malloc doser->timers->system_time\n");
+        printf("error: malloc doser.timers->system_time\n");
         return 1;
     }   
     
@@ -895,101 +939,174 @@ int8_t main(void) {
     printf("Loading nodes...\n");
     if (load_nodes(&doser) == -1) {
         printf("failed! Exiting...\n");
-        return -1;
+        return 1;
     }
     printf("Nodes done!\n");
     printf("\n");
     delayms(print_delay);
+    
     printf("Loading devices...\n");
     if (load_devices(&doser) == -1) {
         printf("failed! Exiting...\n");
-        return -1;
+        return 1;
     }
     printf("Devices done!\n");
     printf("\n");
     delayms(print_delay);
+    
     printf("Loading sensors...\n");
     if (load_sensors(&doser) == -1) {
         printf("failed! Exiting...\n");
-        return -1;
+        return 1;
     }
     printf("Sensors done!\n");
     printf("\n");
     delayms(print_delay);
+    
     printf("Creating environments...\n");
     if (create_environments(&doser) == -1) {
         printf("failed! Exiting...\n");
-        return -1;
+        return 1;
     }
     printf("Environments done!\n");
     printf("\n");
     delayms(print_delay);
+    
     printf("Setting up the test environment...\n");
     if (setup_test_environment(&doser) == -1) {
         printf("failed! Exiting...\n");
-        return -1;
+        return 1;
     }
     printf("Test environment done!\n");
     printf("\n");
     delayms(print_delay);
+    
     printf("Creating tasks...\n");
     create_tasks(&doser);
     printf("Tasks done!\n");
     printf("\n");
     delayms(print_delay);
+    
     printf("Loading data...\n");
     load_readings(&doser);
     printf("Loading data done!\n");
     printf("\n");   
     delayms(print_delay);
-    printf("Printing system lists...\n");
+    
+    /*printf("Printing system lists...\n");
     print_system_lists(&doser);
     printf("Lists done!\n");
     printf("\n");
-    delayms(print_delay);
-    printf("Printing doser hierarchy...\n");    
+    delayms(print_delay);*/
+    
+    /*printf("Printing doser hierarchy...\n");  
     print_hierarchy(&doser);
     printf("Hierarchy done!\n");
     printf("\n");
-    delayms(print_delay);
+    delayms(print_delay);*/
+    
+    /* TODO: initialize local sensors & devices */
+    
+    /* TODO:
+        load last settings/profile:
+            connect to paired hubs
+                get list of sensors and devices
+                    (match to what's in the profile)
+                    initialize any new remote sensors, devices
+            initialize scheduled tasks
+                (check that all devices and sensors exist)
+                    at least check that all nodes associated with schedules are online! 
+     */
+    
     printf("Main loop ticking at 1 Hz...\n");
-    delayms(1000);
+    delayms(print_delay);
     printf("\033[2J");
     uint8_t running = 1;
-    uint64_t round_time = 0;
-    struct schedule_item_t *task;
+    uint32_t round_time = 0;
     round_time = millis();
     uint8_t seconds = 0;
-    do {
-        update_system_time(&doser);
-        if (millis() >= (round_time + 1000)) {
-            printf("\033[1;1H");
-            round_time = millis();
-            data_acquisition(&doser);   
-            update_data_providers(&doser);
-            process_scheduled_tasks(&doser);
-            
-            for (uint8_t t = 0; t < doser.num_tasks; t++) {
-                task = doser.tasks[t];
-                print_tabs(1);
-                printf("\t   Task: %02u - %s\n", t, task->name);
-                print_task(task, 1);
-                printf("\n");
-            }
-            
-            printf("System time: %02u:%02u:%02u %04u-%02u-%02u\tStatus: waiting...%08u\n",
-                   doser.timers->system_datetime->tm_hour,
-                   doser.timers->system_datetime->tm_min,
-                   doser.timers->system_datetime->tm_sec,
-                   doser.timers->system_datetime->tm_year + 1900,
-                   doser.timers->system_datetime->tm_mon + 1,
-                   doser.timers->system_datetime->tm_mday,
-                   millis());
-            printf("\n");
-            seconds++;
-        }
-        delay(1);
-    } while (seconds < 59);
+    uint8_t ui_needs_updating;
     
+    /* Main loop runs data acquisition and tasks etc once a second but should handle async stuff as well */
+    do {
+        /* TODO: later set up better timers and test for overflow etc */
+        update_system_time(&doser);
+        round_time = millis();  
+        printf("\033[1;1H");
+                    
+        data_acquisition(&doser);   
+        
+        update_data_providers(&doser);
+        
+        process_scheduled_tasks(&doser);
+
+        ui_needs_updating = 1;
+        
+        do {
+        /* how to handle interrupt stuff or async comms like joystick events? */
+        /* nodes should be able to send data to daemon.. web socket? */
+        
+        /* TODO: this could at first be polling the nodes for simplicity and
+            run every ~100 ms after everything else is done
+            joystick query could be a different get request
+            shouldnt be too bad if query takes like 1-10 ms and even ds18b20 reading can be done async
+            and query just reads stored values anyway
+            so hub does data acquisition once a second and then spends the rest of the time handling queries
+        */
+        
+        /* TODO: check messages/flags:
+            (connected/paired to a disconnected node, hub, etc?)
+            (connected to back end? received commands from back end?)
+        */
+        
+        /*  if (joystick_event_received == 1) {
+                handle_menu_traversal(menu, joystick_event);
+                ui_needs_updating = 1;
+            } */
+        
+            /* updated at least once and for every joystick event */
+            if (ui_needs_updating == 1) {
+                update_ui(&doser);
+                ui_needs_updating = 0;
+            }
+        } while (millis() < (round_time + 1000));
+        
+        seconds++;
+        if (seconds >= 55) {
+            running = 0;
+        }
+    } while (running == 1);
+    
+    /* Testing the data providers and getting readings from their storage. */
+    /*
+    float one_reading;
+    printf("id: first last  avg\n");
+    for (uint8_t i = 0; i < doser.num_data_providers; i++) {
+        printf("%02u: ", i);
+        if (get_avg_of_range_from_readings(doser.data_providers[i]->data_sources[0]->readings,
+                                       doser.data_providers[i]->data_sources[0]->data_type,
+                                       0, 0, &one_reading) < 0) {
+            printf("error: get readings\n");
+            return 1;
+        }
+        printf("%5.2f ", one_reading);
+        
+        if (get_avg_of_range_from_readings(doser.data_providers[i]->data_sources[0]->readings,
+                                       doser.data_providers[i]->data_sources[0]->data_type,
+                                       29, 29, &one_reading) < 0) {
+            printf("error: get readings\n");
+            return 1;
+        }
+        printf("%5.2f ", one_reading);
+        
+        if (get_avg_of_range_from_readings(doser.data_providers[i]->data_sources[0]->readings,
+                                       doser.data_providers[i]->data_sources[0]->data_type,
+                                       29, 25, &one_reading) < 0) {
+            printf("error: get readings\n");
+            return 1;
+        }
+        printf("%5.2f\n", one_reading);
+    }
+    */
     return 0;
 }

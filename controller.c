@@ -1,3 +1,9 @@
+/* 
+ * Copyright 2021 Kari Kuivalainen ( https://github.com/karikuiv )
+ * Read only license: These files are uploaded for the sole purpose of showing code samples to potential employers.
+ * See readme_license.txt for more information
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -7,6 +13,10 @@
 #include "doser_system.h"
 #include "environment.h"
 
+/**
+ * Create the controller data structures and add to system.
+ * The base structure contains different settings based on controller type.
+ */
 int8_t create_controller(struct doser_t *doser, char type, char *name) {
     struct controller_t **tmp_ptr;
     struct controller_t *controller;
@@ -64,6 +74,10 @@ int8_t create_controller(struct doser_t *doser, char type, char *name) {
     return doser->num_controllers;
 }
 
+/**
+ * Assign a controller to an environment.
+ *
+ */
 int8_t assign_controller (struct environment_t *parent, struct controller_t *controller) {
     struct controller_t **tmp_ptr;
     

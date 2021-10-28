@@ -1,3 +1,9 @@
+/* 
+ * Copyright 2021 Kari Kuivalainen ( https://github.com/karikuiv )
+ * Read only license: These files are uploaded for the sole purpose of showing code samples to potential employers.
+ * See readme_license.txt for more information
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -7,6 +13,9 @@
 #include "doser_system.h"
 #include "environment.h"
 
+/**
+ * Assign a sensor to an environment or reservoir.
+ */
 int8_t assign_sensor(struct environment_t *environment, struct sensor_t *sensor) {
     struct sensor_t **tmp_ptr;
     
@@ -31,13 +40,14 @@ int8_t assign_sensor(struct environment_t *environment, struct sensor_t *sensor)
     return environment->num_sensors;
 }
 
+/**
+ * Creates two types of default data providers for the sensor:
+ *  5 s running average, input  1 reading  / s, output 1 data point / s
+ *      store 24 hours of data = 86400 readings
+ *  1 m running average, input 60 readings / m, output 1 data point / m
+ *      store a week of data = 10080 readings
+ */
 int8_t sensor_create_default_data_providers(struct doser_t *doser, struct sensor_t *sensor) {
-    /* create two types of default data providers for the sensor:
-     *  5 s running average, input  1 reading  / s, output 1 data point / s
-            store 24 hours of data = 86400 readings
-     *  1 m running average, input 60 readings / m, output 1 data point / m
-            store a week of data = 10080 readings
-     */
     uint8_t data_provider_id;   
 
     sensor->num_data_providers = 0;
@@ -70,6 +80,9 @@ int8_t sensor_create_default_data_providers(struct doser_t *doser, struct sensor
     return sensor->num_data_providers;
 }
 
+/**
+ * Create data sources from settings and add to sensor.
+ */
 int8_t sensor_add_data_sources(struct doser_t *doser, struct sensor_t *sensor,
                         uint8_t sensor_type_1, uint8_t data_type_1,
                         uint8_t sensor_type_2, uint8_t data_type_2) {
@@ -141,6 +154,9 @@ int8_t sensor_add_data_sources(struct doser_t *doser, struct sensor_t *sensor,
     return sensor->num_data_sources;
 }
 
+/**
+ * Create sensor from settings and add to system.
+ */
 int8_t load_sensor(struct doser_t *doser, uint8_t sensor_provider_id, char *name,
                  uint8_t sensor_type_1, uint8_t data_type_1, uint8_t sensor_type_2, uint8_t data_type_2) {
                      
@@ -203,6 +219,9 @@ int8_t load_sensor(struct doser_t *doser, uint8_t sensor_provider_id, char *name
     return doser->num_sensors;
 }
 
+/**
+ * Print all readings from a data source's buffer. Probably unneeded.
+ */
 void print_data_source(struct data_source_t *data_source) {
     /* TODO: remove? */
     for(int i = 0; i < data_source->readings->num_readings; i++) {
