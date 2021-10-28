@@ -993,17 +993,17 @@ int main(void) {
     printf("\n");   
     delayms(print_delay);
     
-    /*printf("Printing system lists...\n");
+    printf("Printing system lists...\n");
     print_system_lists(&doser);
     printf("Lists done!\n");
     printf("\n");
-    delayms(print_delay);*/
+    delayms(print_delay);
     
-    /*printf("Printing doser hierarchy...\n");  
+    printf("Printing doser hierarchy...\n");  
     print_hierarchy(&doser);
     printf("Hierarchy done!\n");
     printf("\n");
-    delayms(print_delay);*/
+    delayms(print_delay);
     
     /* TODO: initialize local sensors & devices */
     
